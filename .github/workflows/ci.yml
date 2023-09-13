@@ -13,7 +13,7 @@ jobs:
       - name: run industrial_ci
         uses: 'ros-industrial/industrial_ci@master'
         env:
-          ROS_DISTRO: humble # Replace humble for your chosen distro.
+          ROS_DISTRO: humble
           CLANG_FORMAT_CHECK: file
           CLANG_FORMAT_VERSION: "14"
 
@@ -27,9 +27,8 @@ jobs:
       - name: run industrial_ci
         uses: 'ros-industrial/industrial_ci@master'
         env:
-          ROS_DISTRO: humble # Replace humble for your chosen distro.
-          # UPSTREAM_WORKSPACE: dependencies.rosinstall
-          # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
+          ROS_DISTRO: humble
+          UPSTREAM_WORKSPACE: estop_ros.rosinstall
           CLANG_TIDY: pedantic
 
   build_check:
@@ -39,15 +38,13 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - ROS_DISTRO: humble # Replace humble for your chosen distro.
+          - ROS_DISTRO: humble
             ROS_REPO: main
-            # UPSTREAM_WORKSPACE: dependencies.rosinstall
-            # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
+            UPSTREAM_WORKSPACE: estop_ros.rosinstall
             IMMEDIATE_TEST_OUTPUT: true
-          - ROS_DISTRO: humble # Replace humble for your chosen distro.
+          - ROS_DISTRO: humble
             ROS_REPO: testing
-            # UPSTREAM_WORKSPACE: dependencies.rosinstall
-            # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
+            UPSTREAM_WORKSPACE: estop_ros.rosinstall
             IMMEDIATE_TEST_OUTPUT: true
 
     steps:
