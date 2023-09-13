@@ -13,7 +13,7 @@ jobs:
       - name: run industrial_ci
         uses: 'ros-industrial/industrial_ci@master'
         env:
-          ROS_DISTRO: humble # Replace humble for your chosen distro.
+          ROS_DISTRO: humble
           CLANG_FORMAT_CHECK: file
           CLANG_FORMAT_VERSION: "14"
 
@@ -27,39 +27,10 @@ jobs:
       - name: run industrial_ci
         uses: 'ros-industrial/industrial_ci@master'
         env:
-          ROS_DISTRO: humble # Replace humble for your chosen distro.
-          # UPSTREAM_WORKSPACE: dependencies.rosinstall
-          # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
+          ROS_DISTRO: humble
+          UPSTREAM_WORKSPACE: estop_ros.rosinstall
+          CLANG_TIDY_ARGS: '--extra-arg=-std=c++17'
           CLANG_TIDY: pedantic
-
-  black_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-      - name: run industrial_ci
-        uses: 'ros-industrial/industrial_ci@master'
-        env:
-          ROS_DISTRO: humble # Replace humble for your chosen distro.
-          BLACK_CHECK: true
-
-  pylint_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-      - name: run industrial_ci
-        uses: 'ros-industrial/industrial_ci@master'
-        env:
-          ROS_DISTRO: humble # Replace humble for your chosen distro.
-          # UPSTREAM_WORKSPACE: dependencies.rosinstall
-          # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
-          PYLINT_ARGS: '--errors-only'
-          PYLINT_CHECK: true
 
   build_check:
     runs-on: ubuntu-latest
@@ -68,15 +39,13 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - ROS_DISTRO: humble # Replace humble for your chosen distro.
+          - ROS_DISTRO: humble
             ROS_REPO: main
-            # UPSTREAM_WORKSPACE: dependencies.rosinstall
-            # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
+            UPSTREAM_WORKSPACE: estop_ros.rosinstall
             IMMEDIATE_TEST_OUTPUT: true
-          - ROS_DISTRO: humble # Replace humble for your chosen distro.
+          - ROS_DISTRO: humble
             ROS_REPO: testing
-            # UPSTREAM_WORKSPACE: dependencies.rosinstall
-            # BEFORE_BUILD_TARGET_WORKSPACE: 'apt update -q && python3 -m pip install ****'
+            UPSTREAM_WORKSPACE: estop_ros.rosinstall
             IMMEDIATE_TEST_OUTPUT: true
 
     steps:
