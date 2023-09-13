@@ -81,6 +81,10 @@ void CmdVelOverrideNode::timerCallback()
         estop_ = false;
       }
     }
+
+    std_msgs::msg::Bool estop_state_msg;
+    estop_state_msg.data = estop_;
+    estop_state_pub_->publish(estop_state_msg);
   }
   catch (const std::exception& e)
   {
@@ -103,10 +107,6 @@ void CmdVelOverrideNode::cmdVelCallback(const geometry_msgs::msg::Twist::ConstSh
   {
     twist_pub_->publish(pub_twist_msg);
   }
-
-  std_msgs::msg::Bool estop_state_msg;
-  estop_state_msg.data = estop_;
-  estop_state_pub_->publish(estop_state_msg);
 }
 
 int main(int argc, char* argv[])
