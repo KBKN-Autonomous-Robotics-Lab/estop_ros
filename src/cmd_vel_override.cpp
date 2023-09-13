@@ -89,17 +89,19 @@ void CmdVelOverrideNode::timerCallback()
   }
 }
 
-void CmdVelOverrideNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr twist_msg)
+void CmdVelOverrideNode::cmdVelCallback(const geometry_msgs::msg::Twist::ConstSharedPtr& twist_msg)
 {
+  geometry_msgs::msg::Twist pub_twist_msg = *twist_msg;
+
   if (estop_)
   {
-    twist_msg->linear.x = 0.0;
-    twist_msg->angular.z = 0.0;
-    twist_pub_->publish(*twist_msg);
+    pub_twist_msg.linear.x = 0.0;
+    pub_twist_msg.angular.z = 0.0;
+    twist_pub_->publish(pub_twist_msg);
   }
   else
   {
-    twist_pub_->publish(*twist_msg);
+    twist_pub_->publish(pub_twist_msg);
   }
 
   std_msgs::msg::Bool estop_state_msg;

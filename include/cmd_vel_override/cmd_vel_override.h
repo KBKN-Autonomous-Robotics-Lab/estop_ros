@@ -44,5 +44,5 @@ public:
   CmdVelOverrideNode();
   void openSerial(const std::string& port, const int& baudrate, const int& time_out);
   void timerCallback();
-  void cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr twist_msg);
+  void cmdVelCallback(const geometry_msgs::msg::Twist::ConstSharedPtr& twist_msg);
 };
