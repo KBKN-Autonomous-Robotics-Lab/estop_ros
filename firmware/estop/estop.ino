@@ -86,7 +86,6 @@ void TimerCnt()
 void setup()
 {
   SERIAL_PORT.begin(115200);
-  Serial1.begin(115200);
 
   pinMode(txDenPin, OUTPUT);
   pinMode(estopPin, INPUT_PULLUP);
@@ -120,35 +119,19 @@ void loop()
     switch (status)
     {
       case 0:  // normal
-#ifdef DEBUG
-        SERIAL_PORT.print("NONE ");
-#endif
         break;
 
       case 1:  // reset
         sendSignal(0x00);
-#ifdef DEBUG
-        SERIAL_PORT.print("RESET");
-#endif
         break;
 
       case 2:  // stop
         sendSignal(0x01);
-#ifdef DEBUG
-        SERIAL_PORT.print("ESTOP");
-#endif
         break;
 
       default:
-#ifdef DEBUG
-        SERIAL_PORT.println("ERROR!!");
-#endif
         break;
     }
-
-#ifdef DEBUG
-    displayDebugInfo();
-#endif
   }
 }
 
@@ -157,9 +140,9 @@ void sendSignal(uint8_t value)
   digitalWrite(txDenPin, HIGH);
   timercount = 0;
 
-  Serial1.write(value);
+  Serial.write(value);
   while (timercount < 1)
-    Serial1.flush();
+    Serial.flush();
 
   digitalWrite(txDenPin, LOW);
 
@@ -169,20 +152,3 @@ void sendSignal(uint8_t value)
 
   digitalWrite(LED_BUILTIN, value == 0x00 ? HIGH : LOW);
 }
-
-#ifdef DEBUG
-void displayDebugInfo()
-{
-  SERIAL_PORT.print("[");
-  SERIAL_PORT.print(status, HEX);
-  SERIAL_PORT.print("|");
-  SERIAL_PORT.print(!estop ? "E" : " ");
-  SERIAL_PORT.print(!reset ? "R" : " ");
-  SERIAL_PORT.print(remote ? "W" : " ");
-  SERIAL_PORT.print(remote);
-  SERIAL_PORT.print(reset);
-  SERIAL_PORT.print(estop);
-  SERIAL_PORT.println("]");
-  SERIAL_PORT.flush();
-}
-#endif
