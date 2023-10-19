@@ -55,7 +55,8 @@
 #include <TimerTC3.h>
 
 #define DEBUG
-#define SERIAL_PORT Serial
+#define SERIAL_PORT Serial // to USBC
+#define SERIAL_PORT1 Serial1 // to txDenPin
 #define USE_USBCON  // seeeduino xiao model needs this flag to be defined
 
 #define txDenPin 2
@@ -69,6 +70,9 @@ const char mode[] = {
   0x02,0x02,0x02,0x02,0x01,0x01,0x01,0x01,
   0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02
 };
+
+const char estop_cmd[] = { 0x01, 0x06, 0x20, 0x0E, 0x00, 0x05, 0x23, 0xCA };
+const char reset_cmd[] = { 0x01, 0x06, 0x20, 0x0E, 0x00, 0x06, 0x63, 0xCB };
 
 volatile int timercount = 0;
 volatile int count = 0;
@@ -86,6 +90,7 @@ void TimerCnt()
 void setup()
 {
   SERIAL_PORT.begin(115200);
+  SERIAL_PORT1.begin(115200);
 
   pinMode(txDenPin, OUTPUT);
   pinMode(estopPin, INPUT_PULLUP);
@@ -122,11 +127,11 @@ void loop()
         break;
 
       case 1:  // reset
-        sendSignal(0x00);
+        sendSignal(0x00, reset_cmd, sizeof(reset_cmd));
         break;
 
       case 2:  // stop
-        sendSignal(0x01);
+        sendSignal(0x01, estop_cmd, sizeof(estop_cmd));
         break;
 
       default:
@@ -135,14 +140,16 @@ void loop()
   }
 }
 
-void sendSignal(uint8_t value)
+void sendSignal(uint8_t value, const char *cmd, size_t cmd_size)
 {
   digitalWrite(txDenPin, HIGH);
   timercount = 0;
 
-  Serial.write(value);
+  SERIAL_PORT.write(value);
+  SERIAL_PORT1.write(cmd, cmd_size);
   while (timercount < 1)
-    Serial.flush();
+    SERIAL_PORT.flush();
+    SERIAL_PORT1.flush();
 
   digitalWrite(txDenPin, LOW);
 
